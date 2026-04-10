@@ -36,25 +36,32 @@ execute:
 
 # Introduction
 
+## Overview & Motivation
+Over the last few decades, the film industry has undergone major transformations, shaped by globalization, technological innovation and changing audience preferences. As students who grew up watching movies and series from many genres and countries, we have personally experienced these changes. This makes the topic not only interesting but also culturally relevant and close to us. Studying the evolution of cinema through data allows us to understand how entertainment reflects societal changes, technological progress, and shifting audience tastes. It is a topic that meaningfully connects culture, society, and data science.
+
 ## Project Goals
-The goal of this project is to analyze the evolution of the global film industry from 1990 to 2025. We aim to understand how public tastes and film characteristics such as, genre, budget, duration, and country of origin, have changed over time. This topic is relevant as it connects art, culture, and data science, allowing us to use data to explore historical and cultural trends in entertainment. By transforming creative aspects of cinema into measurable patterns, we can gain insights into how technology, audience preferences, and globalization have shaped the movies we watch today. The analysis will focus on exploratory data analysis (EDA) to identify major trends and correlations.
+The goal of this project is to analyze the evolution of the global film industry from 1990 to 2025. We focused on this specific timeframe to ensure data consistency and completeness, as financial records prior to 1990 are often fragmented, and to specifically capture the modern era defined by the digital revolution and the globalization of film markets. We aim to understand how public tastes and film characteristics such as, genre, budget, duration, and country of origin, have changed over time. This topic is relevant as it connects art, culture, and data science, allowing us to use data to explore historical and cultural trends in entertainment. By transforming creative aspects of cinema into measurable patterns, we can gain insights into how technology, audience preferences, and globalization have shaped the movies we watch today. The analysis will focus on exploratory data analysis (EDA) to identify major trends and correlations.
+
+## Related Work
+Our project was inspired by several online analyses and discussions. For example, IMDb and Kaggle host many studies that explore genre evolution, variations in movie ratings over time, and Hollywood budget inflation. Academic discussions about the globalisation of cinema also highlight the growing impact of film industries such as Bollywood, Nollywood and East Asian cinema. Drawing on these references, we were able to structure our questions and identify the most relevant variables for understanding how the industry has progressed, such as genre, ratings, budgets and countries.
 
 ## Research Questions
 Our primary research question is:
-- How have public tastes and film characteristics (genres, budget, origins, duration) evolved in the global film industry between 1990 and 2025?
+- How do public tastes and movie characteristics (such as genres, budgets, durations, and origins) vary across time in the global film industry between 1990 and 2025?
 
 To address this, we will investigate the following sub-questions, each providing a different lens through which to view the industry's evolution:
-- **Which film genres dominated each decade?** This question helps us understand changing cultural tastes and identify which storytelling formats were most popular in different eras.
-- **How have movie budgets evolved over time?** Analyzing budget trends reveals the economic shifts in the film industry, from the rise of blockbusters to the impact of new technologies.
-- **Is there a correlation between a film’s budget and its IMDb rating?** This explores whether higher financial investment typically translates into better audience reception, a key consideration for producers.
-- **Are modern films longer than those from the 1990s?** The answer to this question can reflect changes in storytelling norms and audience viewing habits.
-- **Which countries have dominated global film production over different periods?** This highlights the geographical shifts in filmmaking, showing the influence of globalization and the rise of new markets.
-- **Do the highest-rated films consistently come from the same regions?** This question examines whether critical acclaim is concentrated in specific cultural or geographical areas.
+
+-   **Which film genres dominated each decade?** This question helps us understand changing cultural tastes and identify which storytelling formats were most popular in different eras.
+-   **How have movie budgets evolved over time?** Analyzing budget trends reveals the economic shifts in the film industry, from the rise of blockbusters to the impact of new technologies.
+-   **Is there a correlation between a film’s budget and its IMDb rating?** This explores whether higher financial investment typically translates into better audience reception, a key consideration for producers.
+-   **Are modern films longer than those from the 1990s?** The answer to this question can reflect changes in storytelling norms and audience viewing habits.
+-   **Which countries have dominated global film production over different periods?** This highlights the geographical shifts in filmmaking, showing the influence of globalization and the rise of new markets.
+-   **Do the highest-rated films consistently come from the same regions?** This question examines whether critical acclaim is concentrated in specific cultural or geographical areas.
 
 # Data
 
 ## Sources
-Our primary dataset was sourced from Kaggle: **IMDb Movies from 1920 to 2025**, published by Raed Addala. The data was accessed in November 2025. The dataset is available at the following URL: [https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023/data](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023/data).
+Our primary dataset was sourced from Kaggle: **IMDb Movies from 1920 to 2025**, published by Raed Addala. The data was accessed in November 2025. The dataset in CSV format is available at the following URL: [https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023/data](https://www.kaggle.com/datasets/raedaddala/imdb-movies-from-1960-to-2023/data).
 
 ## Description
 The original dataset contains approximately 60,000 movies spanning from 1920 to 2025, with 23 variables for each film. After cleaning and filtering for the 1990–2025 period, our final dataset provides a comprehensive view of the modern film industry.
@@ -63,7 +70,17 @@ The original dataset contains approximately 60,000 movies spanning from 1920 to 
 - **Number of variables**: 23 columns
 - **Time period**: 1990 to 2025
 - **Geographic coverage**: Global, with a noted bias towards Western/Hollywood films.
-- **Key variables**: `title`, `release_date`, `primary_genre`, `duration_minutes`, `rating`, `votes_numeric`, `budget`, `gross_worldwide`, and `countries_origin`.
+- **Key variables**:
+    -   `title`: Name of the movie
+    -   `release_date`: Calendar date
+    -   `primary_genre`: Main genre of the film
+    -   `duration_minutes`: Numeric duration
+    -   `rating`: IMDb rating (1–10)
+    -   `votes_numeric`: Number of audience votes
+    -   `budget`, `gross_worldwide`: Financial indicators
+    -   `countries_origin`: Countries involved in production
+
+These variables allow us to study cultural (genre, country), economic (budget, gross), and qualitative (rating) aspects of the film industry.
 
 ## Wrangling
 
@@ -89,6 +106,10 @@ During preprocessing, several data quality issues were identified and addressed:
 # Exploratory Data Analysis
 
 In this section, we conduct an exploratory data analysis (EDA) to answer our research sub-questions. Each sub-section addresses one question, providing visualizations and interpretations to uncover patterns in the global film industry from 1990 to 2025.
+
+## Q1: Which film genres have dominated each decade?
+
+To understand shifting cultural tastes, we first analyze the prevalence of different film genres over time. We group movies by decade (1990s, 2000s, 2010s, 2020s) and their primary genre to identify which categories were most produced. Figure 1 shows the relative percentage of each of the five most common genres in each decade.
 
 ```{python}
 #| label: setup-eda
@@ -116,21 +137,35 @@ data['release_date'] = pd.to_datetime(data['release_date'])
 
 # Create a 'decade' column for analysis
 data['decade'] = (data['release_date'].dt.year // 10) * 10
-```
 
-## Q1: Which film genres have dominated each decade?
-
-To understand shifting cultural tastes, we first analyze the prevalence of different film genres over time. We group movies by decade and their primary genre to identify which categories were most produced.
-
-```{python}
 #| label: fig-genre-trends
 #| fig-cap: "Proportion of top 5 film genres for each decade from 1990 to 2020s"
 
-# Calculate total movies per decade
-decade_totals = data.groupby('decade').size().reset_index(name='total_count')
+# Load the original data to access the 'genres' column
+original_data_path = project_root / "dsas_template" / "data" / "raw" / "Movie_Data_1920_to_2025.csv"
+data_q1 = pd.read_csv(original_data_path, skipinitialspace=True)
 
-# Calculate count of each genre per decade
-genre_counts = data.groupby(['decade', 'primary_genre']).size().reset_index(name='count')
+# Perform necessary cleaning steps for this analysis
+data_q1['release_date'] = pd.to_datetime(data_q1['release_date'], errors='coerce')
+data_q1.dropna(subset=['release_date'], inplace=True) # Drop rows where date conversion failed
+data_q1['decade'] = (data_q1['release_date'].dt.year // 10) * 10
+data_q1 = data_q1[data_q1['decade'] >= 1990] # Filter for the correct time period
+
+# Safely evaluate the 'genres' string into a list
+data_q1['genres_list'] = data_q1['genres'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) and x.startswith('[') else [])
+
+# Calculate weight for each genre (1 / number of genres)
+data_q1['genre_weight'] = data_q1['genres_list'].apply(lambda x: 1/len(x) if len(x) > 0 else 0)
+
+# Explode the DataFrame to have one row per genre for each movie
+genre_data = data_q1.explode('genres_list')
+genre_data = genre_data.rename(columns={'genres_list': 'genre'})
+
+# Calculate total movies per decade (for proportion calculation)
+decade_totals = data_q1.groupby('decade').size().reset_index(name='total_count')
+
+# Calculate weighted count of each genre per decade
+genre_counts = genre_data.groupby(['decade', 'genre'])['genre_weight'].sum().reset_index(name='count')
 
 # Merge to get total counts and calculate proportion
 genre_counts = pd.merge(genre_counts, decade_totals, on='decade')
@@ -144,16 +179,16 @@ top_genres_per_decade = (
 )
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(5.1, 3.4))
+fig, ax = plt.subplots(figsize=(8.25, 5.25))
 
-sns.barplot(data=top_genres_per_decade, x='decade', y='proportion', hue='primary_genre', ax=ax)
+sns.barplot(data=top_genres_per_decade, x='decade', y='proportion', hue='genre', ax=ax)
 
 # Customize plot
 ax.set_title("Proportion of Dominant Film Genres by Decade", 
              fontsize=16, fontweight='bold', pad=15)
 ax.set_xlabel("Decade", fontsize=12)
 ax.set_ylabel("Proportion of Movies Produced", fontsize=12)
-ax.legend(title='Primary Genre', bbox_to_anchor=(1.05, 1), loc='upper left')
+ax.legend(title='Genre', bbox_to_anchor=(1.05, 1), loc='upper left')
 ax.grid(True, axis='y', alpha=0.3, linestyle='--')
 ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 
@@ -163,27 +198,58 @@ plt.show()
 
 **Interpretation:**
 
-The bar chart in @fig-genre-trends, now showing proportions, offers a more nuanced view of shifting genre dominance.
+Drama has consistently been the most dominant genre across all decades, representing roughly 20-25% of all films produced. Comedy also maintains a strong presence as the second most common genre for most of the timeline, though it experienced a decline from roughly 13% in the 1990s to roughly 10-11% in the 2010s and 2020s. This stability in the top two spots suggests a foundational audience interest in character-driven stories and light-hearted entertainment.
 
--   **Observation**: **Drama** and **Comedy** remain foundational genres, consistently representing a significant proportion of films in every decade. However, the landscape for other genres is more dynamic. The proportion of **Action** and **Thriller** films actually decreased from the 1990s to the 2000s. A key trend in the 2000s is the emergence of the **Documentary** genre as a dominant category, which was not in the top five during the 1990s. In the 2010s, Action and Thriller films see a resurgence, reclaiming a top spot.
--   **Interpretation**: The steady presence of Drama and Comedy highlights a constant audience appetite for character-driven stories and humor. The surprising rise of Documentaries in the 2000s could be attributed to lower production costs due to digital filmmaking technology and a growing audience interest in real-world stories, possibly fueled by socio-political events of the decade. The subsequent decline of documentaries from the top-5 and the resurgence of Action/Thrillers in the 2010s and beyond suggests a return to bigger-budget, spectacle-driven "event films," aligning with the global box office focus on blockbusters.
+However, the other genres demonstrate more significant shifts. For example, Action films were a top-five genre in the 1990s but dropped out of the top five in the 2000s and did not return in subsequent decades. The 2000s saw the emergence of Documentary as a top genre (replacing Action), while the 2010s marked the peak of Documentary films, where they accounted for over 10% of the mix.
+
+By the 2020s, the landscape shifted again: Horror emerged as a new top-five contender. Contrary to previous trends, Thriller has grown in prominence, approaching the popularity of Comedy, though Comedy retains the second position. Overall, the chart shows that while Drama remains the cultural constant, the secondary positions shift dynamically between Romance, Thriller, Documentary, and Horror in response to changing industry trends.
 
 ## Q2: How have movie budgets evolved over time?
 
-Next, we examine the economic evolution of the film industry by tracking movie budgets. To mitigate the effect of extreme outliers (mega-blockbusters), we will analyze the median budget per year.
+To examine how the economics of filmmaking have changed, we analyze the median movie budget per year from 1990 to 2025. Using the median instead of the mean reduces the influence of extremely high-budget "tentpole" productions, allowing us to observe general industry trends more accurately. We also adjust for inflation.
+
+**Data Source for Inflation:** U.S. Bureau of Labor Statistics (CPI-U).
 
 ```{python}
 #| label: fig-budget-evolution
-#| fig-cap: "Median movie production budget from 1990 to 2025"
+#| fig-cap: "Median movie production budget: Nominal vs. Inflation-Adjusted (Base 2025)"
 
-# Calculate median budget per year
-median_budget_per_year = data.groupby(data['release_date'].dt.year)['budget'].median().reset_index()
-median_budget_per_year.columns = ['year', 'median_budget']
+# CPI data (Consumer Price Index for All Urban Consumers) sourced from U.S. Bureau of Labor Statistics
+# Base year for adjustment: 2025 (using estimated CPI)
+cpi_data = {
+    1990: 130.7, 1991: 136.2, 1992: 140.3, 1993: 144.5, 1994: 148.2,
+    1995: 152.4, 1996: 156.9, 1997: 160.5, 1998: 163.0, 1999: 166.6,
+    2000: 172.2, 2001: 177.1, 2002: 179.9, 2003: 184.0, 2004: 188.9,
+    2005: 195.3, 2006: 201.6, 2007: 207.3, 2008: 215.3, 2009: 214.5,
+    2010: 218.1, 2011: 224.9, 2012: 229.6, 2013: 233.0, 2014: 236.7,
+    2015: 237.0, 2016: 240.0, 2017: 245.1, 2018: 251.1, 2019: 255.7,
+    2020: 258.8, 2021: 271.0, 2022: 292.7, 2023: 304.7, 2024: 314.0,
+    2025: 322.0
+}
+
+def adjust_for_inflation(row):
+    year = row['release_date'].year
+    if year in cpi_data:
+        return row['budget'] * (cpi_data[2025] / cpi_data[year])
+    return row['budget']
+
+# Apply inflation adjustment to the main dataframe
+data['budget_adjusted'] = data.apply(adjust_for_inflation, axis=1)
+
+# Calculate median nominal and adjusted budget per year
+budget_evolution = data.groupby(data['release_date'].dt.year)[['budget', 'budget_adjusted']].median().reset_index()
+budget_evolution.columns = ['year', 'Nominal Budget', 'Real Budget (2025 USD)']
+
+# Melt for plotting
+budget_evolution_melted = budget_evolution.melt('year', var_name='Budget Type', value_name='Amount')
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(5.1, 2.6))
+fig, ax = plt.subplots(figsize=(8.25, 4.5))
 
-sns.lineplot(data=median_budget_per_year, x='year', y='median_budget', ax=ax, marker='o', color='purple')
+sns.lineplot(data=budget_evolution_melted, x='year', y='Amount', hue='Budget Type', ax=ax, marker='o', palette=['purple', 'orange'])
+
+# Add a trend line for the Real Budget
+sns.regplot(data=budget_evolution, x='year', y='Real Budget (2025 USD)', ax=ax, scatter=False, color='red', line_kws={'linestyle':'--', 'linewidth': 1.5, 'label': 'Trend (Real)'})
 
 # Customize plot
 ax.set_title("Median Movie Budget Evolution (1990-2025)", 
@@ -192,6 +258,7 @@ ax.set_xlabel("Year", fontsize=12)
 ax.set_ylabel("Median Budget (in USD)", fontsize=12)
 ax.grid(True, alpha=0.5, linestyle='--')
 ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1_000_000:.0f}M'))
+ax.legend()
 
 plt.tight_layout()
 plt.show()
@@ -199,39 +266,42 @@ plt.show()
 
 **Interpretation:**
 
-The line chart in @fig-budget-evolution illustrates a clear and significant trend in the cost of filmmaking.
+@fig-budget-evolution reveals a surprising divergence between nominal spending and real purchasing power. While the nominal budget (purple line) suggests a gradual increase from roughly $11 million in 1990 to peaks of $30 million in recent years, the inflation-adjusted "Real Budget" (gold line, Base 2025) tells a starkly different story. Contrary to the expectation that costs have skyrocketed, the regression line indicates a clear downward trend in real median budgets over the 35-year period.
 
--   **Observation**: There is a steady and pronounced upward trend in the median movie budget from 1990 to the early 2020s. While there are some fluctuations year-to-year, the overall trajectory is unambiguously positive, with median budgets increasing several-fold over the period.
--   **Interpretation**: This trend confirms the hypothesis that movies have become more expensive to produce. This is likely driven by several factors, including the increased use of costly CGI and special effects, higher salaries for top-tier actors and directors, and larger marketing campaigns required for global releases. It's important to note that this analysis does not account for inflation, which would make the real increase even more significant. This finding is crucial for understanding the financial pressures on modern studios and the increasing risk associated with film production.
+In real terms (2025 dollars), median budgets actually peaked in the late 1990s, reaching highs of over $35 million. Since then, despite significant volatility, the purchasing power allocated to the median film has steadily eroded, dropping to approximately $19 million by 2025.
+
+Several factors may explain this real-term decline. First, the democratization of digital filmmaking tools may have lowered the barrier to entry, allowing more low-to-mid-budget films to be produced more cheaply. Second, the industry may be experiencing a "hollowing out" effect: while massive blockbusters (not captured by the median) have ballooned in cost, the "middle-class" movie has faced tightening budget constraints.
+
+The graph also highlights distinct periods of volatility. A sharp dip is visible around the 2008 financial crisis and again in the mid-2010s. Interestingly, while there was a significant spike in real spending around 2022–2023 (likely a post-pandemic production surge) values have since corrected downward. Overall, the analysis overturns the assumption that filmmaking is becoming universally more expensive; instead, it suggests that outside of mega-blockbusters, the typical film is being made with a leaner real-world budget than it was three decades ago.
 
 ## Q3: Is there a correlation between a film’s budget and its IMDb rating?
 
-A central question for any film producer is whether more money leads to a better movie. We investigate this by plotting movie budgets against their IMDb ratings. Given that budgets span several orders of magnitude, we use a logarithmic scale for the budget axis to better visualize the relationship.
+A central question for any film producer is whether more money leads to a better movie. We investigate this by plotting **inflation-adjusted budgets** against their IMDb ratings. Given that budgets span several orders of magnitude, we use a logarithmic scale for the budget axis to better visualize the relationship.
 
 ```{python}
 #| label: fig-budget-rating-correlation
-#| fig-cap: "Scatter plot of movie budget vs. IMDb rating"
+#| fig-cap: "Scatter plot of inflation-adjusted movie budget vs. IMDb rating"
 
 # Filter out rows with missing budget or rating for this analysis
-budget_rating_data = data.dropna(subset=['budget', 'rating'])
+budget_rating_data = data.dropna(subset=['budget_adjusted', 'rating'])
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(3.4, 2.6))
+fig, ax = plt.subplots(figsize=(8.25, 5.25))
 
-sns.regplot(data=budget_rating_data, x='budget', y='rating',
+sns.regplot(data=budget_rating_data, x='budget_adjusted', y='rating',
             ax=ax, scatter_kws={'alpha': 0.2, 's': 20},
             line_kws={'color': 'red', 'linewidth': 2})
 
 # Customize plot
 ax.set_xscale('log')
-ax.set_title("Correlation Between Budget and IMDb Rating", 
+ax.set_title("Correlation Between Real Budget and IMDb Rating", 
              fontsize=16, fontweight='bold', pad=15)
-ax.set_xlabel("Budget (log scale)", fontsize=12)
+ax.set_xlabel("Budget (Inflation Adjusted to 2025 USD, log scale)", fontsize=12)
 ax.set_ylabel("IMDb Rating", fontsize=12)
 ax.grid(True, alpha=0.3, linestyle='--')
 
 # Add correlation coefficient
-correlation = budget_rating_data['budget'].corr(budget_rating_data['rating'])
+correlation = budget_rating_data['budget_adjusted'].corr(budget_rating_data['rating'])
 ax.text(0.05, 0.95, f'Pearson Correlation: {correlation:.3f}', 
         transform=ax.transAxes, fontsize=11,
         verticalalignment='top',
@@ -243,10 +313,13 @@ plt.show()
 
 **Interpretation:**
 
-The scatter plot in @fig-budget-rating-correlation explores the relationship between financial investment and critical reception.
+@fig-budget-rating-correlation demonstrates that there is an extremely weak relationship between a film's inflation-adjusted budget and its IMDb rating. While the regression curve (red line) shows a slight upward inflection at the highest budget levels, the overall pattern is largely flat. This visual observation is confirmed by the low Pearson correlation coefficient of 0.140, indicating only a minimal linear association between financial investment and audience reception.
 
--   **Observation**: The plot shows a very weak, almost flat, positive correlation between a movie's budget and its IMDb rating. The Pearson correlation coefficient is close to zero. While the regression line trends slightly upwards, the data points are widely dispersed, indicating that budget is not a strong predictor of audience rating. We can see highly-rated films at all budget levels, from very low to very high.
--   **Interpretation**: This is a critical finding for the film industry. It suggests that simply spending more money on a film does not guarantee a better reception from the audience. Creativity, storytelling, and execution appear to be far more important drivers of quality than the size of the budget. This insight challenges the blockbuster-centric model and highlights the viability of lower-budget films that focus on quality narrative.
+The dispersion of points across the logarithmic budget scale further supports this conclusion. Highly rated films (with scores above 7 or 8) appear across the entire financial spectrum, ranging from micro-budget productions costing less than $10,000 (roughly $10^4$) to massive blockbusters exceeding $200–300 million. Likewise, low-rated films are distributed widely. This significant vertical spread suggests that audience appreciation depends far more on qualitative factors (such as storytelling, acting, and originality) than on the magnitude of resources spent.
+
+However, a subtle pattern emerges at the extreme right of the plot: films with the highest inflation-adjusted budgets (approaching $10^8$ and above) tend to avoid the lowest rating range (scores below 4). In other words, while spending massive amounts does not guarantee a masterpiece, it appears to reduce the likelihood of a film being critically panned. This "floor effect" likely results from the extensive professional oversight, technical standards, and production value inherent in large-scale studio projects.
+
+Overall, this analysis confirms that larger budgets do not strictly correlate with higher ratings. The data highlights the critical success of numerous low-to-mid-budget films, proving that creativity can rival visual spectacle. For producers, this emphasizes that while money can ensure technical competence, it cannot buy audience satisfaction.
 
 ## Q4: Are modern films longer than those from the 1990s?
 
@@ -261,9 +334,12 @@ avg_duration_per_year = data.groupby(data['release_date'].dt.year)['duration_min
 avg_duration_per_year.columns = ['year', 'avg_duration']
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(5.1, 2.6))
+fig, ax = plt.subplots(figsize=(8.25, 4.5))
 
 sns.lineplot(data=avg_duration_per_year, x='year', y='avg_duration', ax=ax, marker='.', color='darkgreen')
+
+# Add a trend line to show the overall increase
+sns.regplot(data=avg_duration_per_year, x='year', y='avg_duration', ax=ax, scatter=False, color='red', line_kws={'linestyle':'--'})
 
 # Customize plot
 ax.set_title("Average Movie Duration Evolution (1990-2025)", 
@@ -278,14 +354,19 @@ plt.show()
 
 **Interpretation:**
 
-The line chart in @fig-duration-evolution examines changes in film length over the past three decades.
+@fig-duration-evolution shows that the average duration of films has gradually increased over the last 3 decades. While films averaged around 102–104 minutes in the early 1990s, in recent years the average has more frequently reached 106–108 minutes, with some peaks even higher.
 
--   **Observation**: The plot shows a slight but noticeable upward trend in the average duration of movies. While the average length hovered around 100-105 minutes in the 1990s, it has gradually climbed to around 105-110 minutes in more recent years. The trend is not dramatic, but it is consistent.
--   **Interpretation**: This data supports the common feeling that movies are getting longer. This could be due to several factors. The rise of "event" films and cinematic universes may encourage longer, more epic storytelling. Additionally, the shift from physical media (like VHS or DVD) to streaming removes physical constraints on runtime, giving filmmakers more freedom. This change reflects an evolution in storytelling norms and audience expectations, with viewers potentially more willing to engage with longer-form content.
+A notable exception emerges between approximately 2004 and 2012, during which time the average runtime decreases by several minutes compared to preceding and subsequent periods. This decline could be due to a number of factors, such as the increased popularity of mid-budget commercial comedies and action films, which tend to be shorter, as well as increased studio pressure to reduce runtimes in order to fit in more daily theatrical showings. There was also a shift towards faster-paced storytelling during the early 2000s. There were also fewer very long 'epic-style' releases during this period than in the later 2010s, which may have contributed to the lower averages.
+
+Although there are yearly fluctuations, likely due to changes in sample size or variations in genre popularity, the overall regression trend line confirms a steady increase throughout the period.
+
+This rise is modest rather than dramatic, but it is consistent, indicating that films today are generally a few minutes longer than those produced in the 1990s. This shift may reflect broader industry trends, such as the growth of franchise-based 'event movies', which often have longer narratives. The expansion of streaming platforms may also be a contributing factor: without the physical constraints imposed by VHS, DVDs or theatrical scheduling, filmmakers have greater freedom to determine runtime.
+
+Overall, the data supports the idea that films have become slightly longer over time. While the increase is not extreme, it signals a shift in storytelling practices, with modern productions tending to embrace more complex or expansive narratives than in previous decades.
 
 ## Q5: Which countries have dominated global film production?
 
-To understand the geographical landscape of the film industry, we identify the top movie-producing countries for each decade. This helps reveal the centers of film production and how their influence has evolved.
+To understand the geographical landscape of the film industry, we identify the top movie-producing countries for each decade (from the 1990s to the 2020s). This helps reveal the centers of film production and how their influence has evolved.
 
 ```{python}
 #| label: fig-country-production
@@ -318,7 +399,7 @@ top_countries_per_decade = (
 )
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(5.1, 3.4))
+fig, ax = plt.subplots(figsize=(8.25, 5.25))
 
 sns.barplot(data=top_countries_per_decade, x='decade', y='count', hue='primary_country', ax=ax, palette='viridis')
 
@@ -336,10 +417,15 @@ plt.show()
 
 **Interpretation:**
 
-The bar chart in @fig-country-production provides a clear picture of global film production leadership.
+The bar chart in @fig-country-production allows us to have a clear picture of global film production leadership. We can see that the United States (Hollywood) has been the undisputed leader in film production across every decade since 1990, producing significantly more films than any other country. 
 
--   **Observation**: The **United States** has been the undisputed leader in film production across all decades since 1990, producing significantly more films than any other country. However, other countries have a consistent presence. The **United Kingdom**, **France**, **Japan**, and **India** regularly appear as top producers.
--   **Interpretation**: This visualization confirms the long-standing dominance of Hollywood in the global film market. However, it also highlights the strength of other national film industries. The consistent output from countries like the UK, France, India (Bollywood), and Japan demonstrates that while the US leads in quantity, vibrant and productive film cultures exist worldwide. This finding underscores the geographical bias mentioned in our data section; while the US appears dominant, this dataset may underrepresent film production from non-Western regions.
+It also shows us that the constant second position holder is the United Kingdom, demonstrating its strong and stable film industry. The consistent presence of the UK, often as a co-production partner with the US, underscores its pivotal role. 
+
+Other notable producers include India, France, and Canada, though their rankings shift between the 3rd, 4th, and 5th positions across decades. The strong showing from India (Bollywood) and the rise of China illustrate the globalization of cinema and the increasing importance of non-Western markets.
+
+A key trend to highlight is the emergence of China as a top producer in the 2010s and 2020s, reflecting the massive growth of its domestic film market. But Hong Kong's decline after ranking among the top five films in the 1990s shows a change in Asian film production.
+
+It is once again crucial to reiterate the geographical bias mentioned in our data section; while the US appears overwhelmingly dominant, this dataset likely underrepresents the volume of film production from regions. It can be, for instance,  Nollywood (Nigeria) or other prolific non-English language industries, as their data may be less comprehensively captured on IMDb.
 
 ## Q6: Do the highest-rated films consistently come from the same regions?
 
@@ -357,7 +443,7 @@ top_rated_country_counts = top_rated_movies['primary_country'].value_counts().nl
 top_rated_country_counts.columns = ['country', 'count']
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(4.2, 2.6))
+fig, ax = plt.subplots(figsize=(8.25, 4.5))
 
 sns.barplot(data=top_rated_country_counts, x='count', y='country', ax=ax, palette='plasma')
 
@@ -374,14 +460,13 @@ plt.show()
 
 **Interpretation:**
 
-The bar chart in @fig-top-rated-countries reveals where the most critically acclaimed films originate.
+The bar chart in @fig-top-rated-countries is revealing a clear hierarchy. Once again, it shows that the United States is the most dominant producer of top-rated films, contributing far more highly-rated movies than any other country in our analysis. However, other elements should be taken as a source of quality. A second tier of countries, which includes the United Kingdom, Japan and India as well, consistently contributes a significant number of critically acclaimed films. The list also includes other nations such as France, South Korea, and Germany, proving that high-rated films originate from diverse cultural and geographical centers.
 
--   **Observation**: The **United States** is the dominant producer of top-rated films, far surpassing any other country. However, other countries like the **United Kingdom**, **Japan**, and **India** also contribute a significant number of highly-rated movies.
--   **Interpretation**: While the US leads in both overall production and the production of highly-rated films, this chart shows that cinematic excellence is a global phenomenon. The strong showing from countries known for their distinct cinematic traditions (e.g., Japan for anime and classic cinema, India for Bollywood) indicates that high-quality filmmaking is not confined to Hollywood. This suggests that while the Hollywood system is effective at producing popular and critically successful films, diverse voices from around the world are also creating works that resonate strongly with audiences.
+This finding provides a nuanced answer to our question. While the highest-rated films do consistently come from the United States in terms of volume, critical acclaim is by no means exclusive to it. The strong showing from the UK aligns with its established industry and close ties to Hollywood. More importantly, the significant contributions from Japan (renowned for its auteurs and animation), India (with its massive Bollywood output), and South Korea (a recent powerhouse in global cinema) indicate that cinematic excellence can be considered as a global achievement. This suggests that while the Hollywood system is effective at producing a pretty high volume of popular and successful films, distinct cultural voices from around the world are equally capable of creating works that resonate deeply with global audiences.
 
 # Methods
 
-While our project is primarily an exploratory data analysis (EDA), we used a statistical method to quantify the relationship between a movie's budget and its IMDb rating.
+For questions involving temporal trends (budget and duration evolution), we used line charts with trend lines. For categorical comparisons (genres and countries across decades), we utilized bar charts and proportional analysis. For the relationship between continuous variables (budget and rating), we applied statistical correlation measures as detailed below.
 
 ## Pearson Correlation Coefficient
 
@@ -389,7 +474,7 @@ To answer the question, "Is there a correlation between a film’s budget and it
 
 -   **Why this method?** The Pearson correlation coefficient (r) is a measure of linear association between two continuous variables. It is the most common method for measuring correlation and is ideal for understanding both the strength and direction of a relationship. Our goal was to see if a linear relationship exists where higher budgets correspond to higher ratings.
 
--   **Assumptions**: The key assumptions for Pearson correlation are that the variables are approximately normally distributed and that the relationship between them is linear. Our EDA scatter plot (`@fig-budget-rating-correlation` in the EDA section) showed that while the relationship is weak, it doesn't appear to be strongly non-linear. We also used a log scale for the budget to handle the wide range of values, which helps in visualizing the linear trend.
+-   **Assumptions**: The key assumptions for Pearson correlation are that the variables are approximately normally distributed and that the relationship between them is linear. Our EDA scatter plot (@fig-budget-rating-correlation in the EDA section) showed that while the relationship is weak, it doesn't appear to be strongly non-linear. We also used a log scale for the budget to handle the wide range of values, which helps in visualizing the linear trend.
 
 -   **How it answers the question**: The coefficient ranges from -1 (perfect negative linear correlation) to +1 (perfect positive linear correlation), with 0 indicating no linear correlation. By calculating this value, we can quantitatively assess the "money vs. quality" debate.
 
@@ -413,19 +498,32 @@ print("Pearson Correlation Between Movie Budget and IMDb Rating")
 print(correlation_df.to_string(index=False))
 ```
 
+## Linear Regression Line
+
+In addition to the Pearson correlation, we visualized the relationship between budget and rating using a **linear regression line** on our scatter plot (@fig-budget-rating-correlation).
+
+-   **Why this method?** A regression line provides a visual representation of the trend in the data. It is the line that best fits the data points, minimizing the overall distance from the points to the line. This makes it an excellent tool for visually assessing the direction and strength of a linear relationship.
+
+-   **How it complements the analysis**: While the Pearson coefficient gives a single number, the regression line on the scatter plot shows how the trend plays out across the entire range of data. The flatness of the line in our plot visually confirms the very weak correlation indicated by the coefficient, making the finding more intuitive and impactful.
+
 # Findings and Discussion
 
-Our analysis aimed to determine if a higher budget translates to a better-received film, as measured by IMDb ratings.
+Our exploratory data analysis (EDA) revealed several key trends in the global film industry from 1990 to 2025, providing insights into economic and cultural evolution.
 
--   **Finding**: The Pearson correlation coefficient between a movie's budget and its IMDb rating is **`{python} f'{correlation:.4f}'`**, as calculated in @tbl-correlation-calculation.
+-   **Finding**: The Pearson correlation coefficient between a movie’s inflation-adjusted budget and its IMDb rating is 0.140, as calculated in Table 1.
+-   **Interpretation**: A correlation coefficient of 0.140 indicates an extremely weak positive linear relationship. While this suggests no meaningful linear association between financial investment and audience satisfaction, the scatter plot reveals a subtle nuance: while high budgets do not guarantee high ratings, they appear to prevent extremely low ones. There is a visible “floor effect” where high-budget films (approaching 108) rarely fall into the lowest rating categories.
+-   **Connection to Research Question**: This directly answers our third sub-question. While there might be a perception that big-budget films are “better,” our data does not support this. The lack of a strong correlation implies that financial investment cannot be considered a reliable predictor of audience appreciation, though it may act as a safeguard against technical failure.
+-   **Domain Context**: This finding is significant for the film industry. It challenges the “blockbuster formula” that relies on massive budgets to generate hits. It suggests that qualitative factors, such as script quality and acting, are the critical drivers of reception. It also validates the success of low-budget independent films that achieve high ratings, proving that creativity can triumph over capital.
 
--   **Interpretation**: A correlation coefficient of `{python} f'{correlation:.4f}'` indicates a **very weak positive linear relationship**. This value is extremely close to zero, which suggests that there is virtually no meaningful linear association between how much a movie costs to make and how much the audience likes it.
+Beyond the budget-rating relationship, our EDA uncovered other important industry patterns:
 
--   **Connection to Research Question**: This directly answers our third sub-question. While there might be a perception that big-budget films are "better," our data does not support this. The lack of a strong correlation implies that financial investment is not a reliable predictor of audience appreciation.
+-   **Genre Evolution**: Drama has remained the undisputed dominant genre (~25%) across all decades. Comedy has seen a slight decline, dropping from ~13% in the 90s to ~10-11% in recent years. We observed dynamic shifts elsewhere: Documentaries surged specifically in the 2010s, accounting for over 10% of the mix, while the 2020s have been defined by the emergence of Horror as a top-five genre.
+-   **Economic Trends**: Contrary to the assumption that filmmaking is becoming universally more expensive, our inflation-adjusted analysis reveals a downward trend in real median budgets since the late 1990s. While nominal costs have risen to approximately $30 million, the real purchasing power (2025 USD) allocated to the median film has eroded, dropping to approximately $19 million by 2025.
+-   **Quality vs. Cost**: We calculated a negligible correlation (0.140) between inflation-adjusted budgets and IMDb ratings. This confirms that financial investment does not guarantee audience appreciation, though the data suggests a “floor effect” where high budgets help prevent extremely low ratings by ensuring technical competence.
+-   **Film Duration**: We found a slight but consistent upward trend in average movie duration, moving from 102–104 minutes in the 1990s to 106–108 minutes currently, supporting the perception that storytelling formats are lengthening.
+-   **Global Production Landscape**: The United States maintained dominant production volume, but the landscape is globalizing. The consistent presence of the UK, along with the emergence of China, India, and Japan, demonstrates a widening field. While the US produces the most highly-rated films, critical acclaim is distributed across multiple regions.
 
--   **Domain Context**: This finding is significant for the film industry. It challenges the "blockbuster formula" that often relies on massive budgets to generate hits. It suggests that other factors—such as the quality of the script, the director's vision, and the actors' performances—are far more critical drivers of a film's quality and reception. It also validates the success of low-budget independent films that achieve high ratings, proving that creativity can triumph over capital.
-
--   **Limitations**: It is important to note that correlation does not imply causation. Furthermore, this analysis only measures a *linear* relationship. It is possible that a more complex, non-linear relationship exists between budget and rating, though our EDA did not suggest one.
+**Limitations**: It is important to note that correlation does not imply causation. Furthermore, the budget-rating analysis only measures a linear relationship; the slight “floor effect” observed suggests non-linear dynamics at the highest budget levels. Additionally, our findings regarding the “real” budget decline rely heavily on the accuracy of CPI adjustments and may not fully capture sector-specific inflation (e.g., the specific rising costs of CGI talent vs. general consumer goods).
 
 # Conclusion
 
@@ -435,41 +533,26 @@ This project set out to analyze the evolution of the global film industry from 1
 
 Our main findings reveal a dynamic and evolving industry:
 
--   **Genre Trends**: While **Drama** and **Comedy** remain consistently popular, the 21st century has seen a significant rise in the production of **Action** and **Thriller** films, likely driven by advancements in technology and a global market for spectacle.
--   **Economic Shifts**: We observed a clear and steady increase in the median movie **budget** over the past three decades, confirming that filmmaking has become a more expensive endeavor.
--   **Quality vs. Cost**: Our analysis showed a **very weak positive correlation** between a film's budget and its IMDb rating. This critical insight suggests that financial investment does not guarantee audience appreciation; creativity and storytelling remain paramount.
--   **Film Duration**: We found a slight but consistent upward trend in the average movie **duration**, supporting the common perception that films are getting longer.
--   **Global Production**: The **United States** continues to dominate in production volume, but other countries like the **United Kingdom, Japan, and India** are also major, consistent contributors to the global film landscape, each with a significant number of highly-rated films.
+-   **Genre Trends**: While Drama remains the undisputed leader (~25% of production), Comedy has seen a steady decline in dominance. Documentaries experienced a surge in the 2000s and 2010s, while the 2020s have been defined by the consistent presence of Thriller and the emergence of Horror.
+-   **Economic Shifts**: Contrasting with the assumption of rising costs, our inflation-adjusted analysis reveals a downward trend in real median budgets since the late 1990s. While nominal spending has risen, the purchasing power allocated to the typical film has eroded, suggesting a “hollowing out” of mid-budget productions in favor of low-cost entries and massive tentpoles.
+-   **Quality vs. Cost**: We calculated a negligible correlation (0.140) between inflation-adjusted budgets and IMDb ratings. This confirms that financial investment does not guarantee audience appreciation, though the data suggests a “floor effect” where high budgets help prevent extremely low ratings by ensuring technical competence.
+-   **Film Duration**: We found a slight but consistent upward trend in average movie duration, moving from 102–104 minutes in the 1990s to 106–108 minutes currently, supporting the perception that storytelling formats are lengthening.
+-   **Global Production**: The United States continues to dominate volume, but the landscape is globalizing. The consistent output of the United Kingdom, combined with the emergence of China and strong showings from India and Japan, highlights a diversifying market where critical acclaim is increasingly distributed worldwide.
 
 ## Limitations
 
 It is important to acknowledge the constraints of our analysis to contextualize our findings properly:
 
--   **Data Bias**: The dataset is heavily skewed towards Hollywood and Western cinema. Consequently, our findings on "global" trends may not fully capture the nuances of film industries in other parts of the world, such as Asia, Africa, or South America.
--   **Missing Data**: A significant number of films, particularly older or independent ones, were missing financial data (e.g., `budget`, `gross_worldwide`). While we handled this by excluding them from specific financial analyses, their absence could slightly skew the results.
--   **No Inflation Adjustment**: The financial data used in this report has not been adjusted for inflation. This means that the observed increase in movie budgets is likely even more pronounced in real terms.
--   **Subjective Ratings**: IMDb ratings are user-generated and can be influenced by cultural biases, targeted campaigns (e.g., "review bombing"), or the specific demographics of the platform's user base.
--   **Methodological Scope**: Our analysis is exploratory in nature. While we have identified interesting correlations, we cannot establish causal relationships between variables.
+-   **Data Bias**: The dataset is heavily skewed towards Hollywood and Western cinema. Consequently, our findings on “global” trends may not fully capture the nuances of film industries in other parts of the world, such as Asia, Africa, or South America, despite the presence of data from major hubs like India and China.
+-   **Missing Data**: A significant number of films, particularly older or independent ones, were missing financial data (e.g., `budget`, `gross_worldwide`). While we handled this by excluding them from specific financial analyses, their absence could slightly skew the results toward better-documented, higher-profile releases.
+-   **Inflation Adjustment Method**: Unlike previous analyses, this report did adjust financial data for inflation using the general Consumer Price Index (CPI-U). However, this index tracks the price of general consumer goods (like food and housing), not specific film production inputs. It does not account for the rapid, sector-specific inflation of costs related to CGI, specialized union labor, and star salaries. Therefore, our "Real Budget" calculations may still not fully reflect the true erosion of purchasing power within the industry.
+-   **Subjective Ratings**: IMDb ratings are user-generated and can be influenced by cultural biases, targeted campaigns (e.g., “review bombing”), or the specific demographics of the platform’s user base.
+-   **Methodological Scope**: Our analysis is exploratory in nature. While we have identified interesting correlations (or the lack thereof), we cannot establish causal relationships between variables.
 
-## Future Work
-
-Based on our findings and limitations, we propose the following steps for completing the report and for future analysis:
-
-#### Next Steps for the Final Report
-
-1.  **Refine Narrative**: Review and enhance the interpretations in the EDA and Analysis sections to ensure a clear and compelling story.
-2.  **Final Proofread**: Conduct a thorough review of the entire report for grammatical errors, consistency, and clarity.
-3.  **Check All References**: Ensure all figures and tables are correctly labeled and referenced in the text using Quarto's `@fig-` and `@tbl-` syntax.
-4.  **Prepare Presentation**: Synthesize the key findings into a concise and visually engaging presentation for the final delivery.
-
-#### Future Analytical Work
-
-1.  **Adjust for Inflation**: A crucial next step would be to adjust all financial data to a constant dollar value (e.g., 2025 USD). This would allow for a more accurate and meaningful comparison of budgets and revenues across different decades.
-2.  **Build a Predictive Model**: To move beyond correlation, a regression model could be built to identify the most significant predictors of a movie's `gross_worldwide` revenue or `rating`. This could incorporate variables like genre, budget, duration, and even the popularity of its director or lead actors.
-3.  **Deeper Genre Analysis**: Instead of just using the primary genre, future work could analyze the impact of genre *combinations*. Natural Language Processing (NLP) on movie descriptions could also be used to create more nuanced genre classifications.
-4.  **Geographical Deep Dive**: A more focused analysis on the film industries of specific non-US countries (e.g., India, South Korea, Nigeria) could reveal unique trends and patterns that are missed in a global-level overview.
-
-# References {.unnumbered}
+# References
 
 ::: {#refs}
 :::
+
+**Inflation Data Source:**
+U.S. Bureau of Labor Statistics. (n.d.). *Consumer Price Index (CPI-U)*. Retrieved from [https://www.bls.gov/cpi/](https://www.bls.gov/cpi/)

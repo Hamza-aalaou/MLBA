@@ -1,6 +1,6 @@
 # Data Science Project Template
 
-**Group Name:** Group O
+**Group Name:** Group O 
 **Authors:** Hamza Aalaou, Iris Dos Santos Grilo, Soraya Kachache Alaoui, Katarina Ukzmail
 
 The project template was initially developed by [Ilia Azizi](https://iliaazizi.com/) with [main source here](https://github.com/Unco3892/datascience-template).

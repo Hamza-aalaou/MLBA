@@ -1,7 +1,7 @@
 # Introduction
 
 ## Project Goals
-The goal of this project is to analyze the evolution of the global film industry from 1990 to 2025. We aim to understand how public tastes and film characteristics—such as genre, budget, duration, and country of origin—have changed over time. This topic is relevant as it connects art, culture, and data science, allowing us to use data to explore historical and cultural trends in entertainment. By transforming creative aspects of cinema into measurable patterns, we can gain insights into how technology, audience preferences, and globalization have shaped the movies we watch today. The analysis will focus on exploratory data analysis (EDA) to identify major trends and correlations.
+The main goal of this project is to predict house sale prices using structural, spatial, and qualitative features. By analyzing a dataset of residential properties encompassing various attributes (such as total square footage, neighborhood, overall quality, and condition), we aim to uncover the underlying patterns that determine a property's value. This involves exploring correlations between physical characteristics—like living area and basement size—and a property's sale price. Ultimately, we seek to build robust machine learning models capable of forecasting real estate prices, providing valuable insights for valuation and risk assessment while addressing common data idiosyncrasies like right-skewed pricing distributions and structurally meaningful missing values.
 
 ::: {.callout-tip}
 ## Writing Tip: Make it Relevant
@@ -11,15 +11,14 @@ Connect your project to real-world actuarial or insurance problems. For example,
 
 ## Research Questions
 Our primary research question is:
-- How have public tastes and film characteristics (genres, budget, origins, duration) evolved in the global film industry between 1990 and 2025?
+- To what extent can the sale price of a property be predicted using its structural, location, and qualitative features?
 
-To address this, we will investigate the following sub-questions, each providing a different lens through which to view the industry's evolution:
-- **Which film genres dominated each decade?** This question helps us understand changing cultural tastes and identify which storytelling formats were most popular in different eras.
-- **How have movie budgets evolved over time?** Analyzing budget trends reveals the economic shifts in the film industry, from the rise of blockbusters to the impact of new technologies.
-- **Is there a correlation between a film’s budget and its IMDb rating?** This explores whether higher financial investment typically translates into better audience reception, a key consideration for producers.
-- **Are modern films longer than those from the 1990s?** The answer to this question can reflect changes in storytelling norms and audience viewing habits.
-- **Which countries have dominated global film production over different periods?** This highlights the geographical shifts in filmmaking, showing the influence of globalization and the rise of new markets.
-- **Do the highest-rated films consistently come from the same regions?** This question examines whether critical acclaim is concentrated in specific cultural or geographical areas.
+To thoroughly investigate this, we will explore the following sub-questions:
+
+-   **Which property features (e.g., Total Square Footage, Overall Quality, Neighborhood) exhibit the strongest correlation with sale prices?** This helps identify the key drivers of property valuation.
+-   **How do structurally missing values impact market assessment?** By logically handling missingness (e.g., treating NA in `PoolQC` as the absence of a pool, rather than randomly missing data), we can appropriately incorporate non-standard features without biasing our algorithms.
+-   **How do ensemble machine learning models compare to linear models in predicting house prices?** We will evaluate the predictive performance of algorithms like Random Forest and XGBoost versus standard Linear or Ridge/Lasso Regression to see if relationships are primarily linear or highly complex.
+-   **What are the most effective strategies to address the right-skewness of house prices?** High-end outliers often skew price distributions. We will assess the impact of standardizing the target variable through Log Transformation (`log1p`), evaluating models using metrics like RMSE and benchmarked MAE.
 
 ::: {.callout-important}
 ## Research Question Quality
@@ -34,14 +33,13 @@ Good research questions are:
 
 ## Related Work
 
-Discuss relevant academic papers, methodologies, and prior research that informed your project. Include both domain-specific literature (actuarial science, insurance, finance) and methodological references (statistical methods, data science techniques).
+Recent research in quantitative real estate economics and predictive analytics demonstrates that machine learning models can effectively predict market values by capturing complex structural and local data. Studies consistently highlight that core features like Total Square Footage and overall structural quality act as the primary variables in house pricing.
 
-**Example structure:**
+**Key Findings in Domain Literature:**
+- **Model Performance:** Authors emphasize that ensemble models naturally outperform unregularized linear models by capturing non-linear interactions (e.g., house prices might increase logarithmically relative to certain square foot thresholds, or interact sharply with specific neighborhoods).
+- **Handling Data Structure:** Research frequently addresses data sparsity in property disclosures. Standard econometric approaches rely on proper missing data treatments (like encoding 'None' appropriately for lacking features) and utilizing Log Transformations on dependent variables exhibiting right-skewness to normalize error distributions during regression modeling.
 
-- **Domain literature**: Academic papers on your topic (e.g., claims analysis, mortality modeling, risk assessment)
-- **Methodological references**: Statistical methods or data science techniques you applied
-- **Course materials**: @azizi2025dsas provides Python-based data science techniques for actuarial applications
-- **Technical resources**: Books like @mckinney2022python and @vanderplas2016python for implementation details
+Relevant literature and references informing this approach draw from extensive applications of Hedonic Price Theory and urban real estate modeling methodologies (e.g., standard baseline studies typically covered in datasets like Ames Housing).
 
 ::: {.callout-tip}
 ## Academic Citations Recommended

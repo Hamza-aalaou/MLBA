@@ -1,90 +1,82 @@
 import pandas as pd
 import numpy as np
-import re
-import ast
-from pathlib import Path
-
-def clean_duration(duration_str):
-    if pd.isna(duration_str):
-        return np.nan
-    hours = 0
-    minutes = 0
-    if 'h' in duration_str:
-        hours = int(re.search(r'(\d+)h', duration_str).group(1))
-    if 'm' in duration_str:
-        minutes = int(re.search(r'(\d+)m', duration_str).group(1))
-    return hours * 60 + minutes
-
-def clean_currency(currency_str):
-    if pd.isna(currency_str) or currency_str == '':
-        return np.nan
-    # Remove dollar sign, commas, and "(estimated)"
-    cleaned_str = re.sub(r'[$,()]', '', str(currency_str)).replace('estimated', '').strip()
-    try:
-        return float(cleaned_str)
-    except (ValueError, TypeError):
-        return np.nan
-
-def get_first_genre(genres_str):
-    if pd.isna(genres_str):
-        return None
-    try:
-        # The genres are in a string that looks like a list
-        genres_list = ast.literal_eval(genres_str)
-        if genres_list:
-            return genres_list[0]
-    except (ValueError, SyntaxError):
-        # If it's not a list-like string, just return the string itself or None
-        return genres_str.split(',')[0].strip() if genres_str else None
-    return None
-
-def clean_votes(votes_str):
-    if pd.isna(votes_str):
-        return np.nan
-    votes_str = str(votes_str).strip()
-    if votes_str.endswith('K'):
-        return float(votes_str[:-1]) * 1000
-    if votes_str.endswith('M'):
-        return float(votes_str[:-1]) * 1000000
-    try:
-        return float(votes_str)
-    except ValueError:
-        return np.nan
-
 from pathlib import Path
 
 def main():
-    # Establish the project root directory, which is two levels up from this script
+    # Establish the project root directory
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
     
-    # Load data using robust paths
-    raw_data_path = PROJECT_ROOT / 'dsas_template' / 'data' / 'raw' / 'Movie_Data_1920_to_2025.csv'
-    processed_data_path = PROJECT_ROOT / 'dsas_template' / 'data' / 'processed' / 'Movie_Data_1920_to_2025_cleaned.csv'
+    # Paths
+    raw_train_path = PROJECT_ROOT / 'dsas_template' / 'data' / 'raw' / 'train.csv'
+    raw_test_path = PROJECT_ROOT / 'dsas_template' / 'data' / 'raw' / 'test.csv'
+    processed_train_path = PROJECT_ROOT / 'dsas_template' / 'data' / 'processed' / 'train_cleaned.csv'
+    processed_test_path = PROJECT_ROOT / 'dsas_template' / 'data' / 'processed' / 'test_cleaned.csv'
     
-    df = pd.read_csv(raw_data_path)
+    print(f"Loading data from: {raw_train_path}")
+    
+    # Load raw data
+    try:
+        train_df = pd.read_csv(raw_train_path)
+        test_df = pd.read_csv(raw_test_path)
+    except Exception as e:
+        print(f"Error loading CSV: {e}")
+        return
 
-    # Apply cleaning functions
-    df['duration_minutes'] = df['duration'].apply(clean_duration)
-    
-    currency_cols = ['budget', 'opening_weekend_gross', 'gross_worldwide', 'gross_us_canada']
-    for col in currency_cols:
-        df[col] = df[col].apply(clean_currency)
+    print(f"Original train dataset shape: {train_df.shape}")
+    print(f"Original test dataset shape: {test_df.shape}")
+
+    # Helper function for data cleaning following scientific practices
+    def clean_dataset(df, is_train=True):
+        df_clean = df.copy()
+
+        # 1. Handling Missingness scientifically
+        # Many "missing" values in categorical variables denote the absence of the feature.
+        # Imputing these 'NA'/'NaN' with the string 'None' (e.g. PoolQC, MiscFeature, Alley, etc.)
+        cols_with_none_meaning = [
+            'PoolQC', 'MiscFeature', 'Alley', 'Fence', 'FireplaceQu', 
+            'GarageType', 'GarageFinish', 'GarageQual', 'GarageCond',
+            'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2',
+            'MasVnrType'
+        ]
+        for col in cols_with_none_meaning:
+            if col in df_clean.columns:
+                df_clean[col] = df_clean[col].fillna('None')
+
+        # 2. Skewness in Target Variable
+        # For the target variable (SalePrice), it typically exhibits right-skewness.
+        # We apply Log Transformation to normalize its distribution (standard practice in econometrics).
+        if is_train and 'SalePrice' in df_clean.columns:
+            df_clean['SalePrice'] = np.log1p(df_clean['SalePrice'])
+
+        # 3. Feature Engineering: New Features
+        # Create a TotalSF (Total Square Footage) feature by summing basement and ground-level areas.
+        # Note: BsmtFinSF1, BsmtFinSF2, BsmtUnfSF sum to TotalBsmtSF, 
+        # and 1stFlrSF, 2ndFlrSF, LowQualFinSF sum to GrLivArea.
+        # The prompt specifically requests summing basement and ground-level areas.
         
-    df['primary_genre'] = df['genres'].apply(get_first_genre)
-    
-    df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
-    
-    df['votes_numeric'] = df['votes'].apply(clean_votes)
+        # We will assure numeric filling for area sums if they miss any value
+        total_bsmt_sf = df_clean['TotalBsmtSF'].fillna(0)
+        gr_liv_area = df_clean['GrLivArea'].fillna(0)
+        
+        df_clean['TotalSF'] = total_bsmt_sf + gr_liv_area
 
-    # Filter data by release year
-    df = df[df['release_date'].dt.year.between(1990, 2025)]
+        return df_clean
 
-    # Drop original columns that have been replaced
-    df = df.drop(columns=['duration', 'genres', 'votes'])
+    train_cleaned = clean_dataset(train_df, is_train=True)
+    test_cleaned = clean_dataset(test_df, is_train=False)
+
+    print(f"Cleaned train dataset shape: {train_cleaned.shape}")
+    print(f"Cleaned test dataset shape: {test_cleaned.shape}")
 
     # Save cleaned data
-    df.to_csv(processed_data_path, index=False)
-    print(f"Cleaned data saved to {processed_data_path}")
+    processed_train_path.parent.mkdir(parents=True, exist_ok=True)
+    processed_test_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    train_cleaned.to_csv(processed_train_path, index=False)
+    test_cleaned.to_csv(processed_test_path, index=False)
+    
+    print(f"Cleaned train data saved to: {processed_train_path}")
+    print(f"Cleaned test data saved to: {processed_test_path}")
 
 if __name__ == '__main__':
     main()

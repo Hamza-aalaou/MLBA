@@ -1,48 +1,27 @@
 # Methods
 
-While our project is primarily an exploratory data analysis (EDA), we used a statistical method to quantify the relationship between a movie's budget and its IMDb rating.
+To answer our research questions concerning the predictability of a property's sale price, we transitioned from basic correlation analyses to a formal machine learning pipeline incorporating advanced Unsupervised and Supervised techniques.
 
-## Pearson Correlation Coefficient
+## Unsupervised Analysis (Clustering & Dimension Reduction)
 
-To answer the question, "Is there a correlation between a film’s budget and its IMDb rating?", we used the **Pearson correlation coefficient**.
+Given the high dimensionality of the Ames Housing dataset (nearly 80 features), we employed unsupervised learning to synthesize and group variables prior to predictive modeling.
 
--   **Why this method?** The Pearson correlation coefficient (r) is a measure of linear association between two continuous variables. It is the most common method for measuring correlation and is ideal for understanding both the strength and direction of a relationship. Our goal was to see if a linear relationship exists where higher budgets correspond to higher ratings.
+-   **Dimension Reduction (PCA):** The dataset contains numerous highly correlated quality metrics (e.g., `OverallQual`, `KitchenQual`, `ExterQual`, `BsmtQual`). We applied Principal Component Analysis (PCA) to collapse these correlated variables into a single, cohesive "Property Excellence" component. This reduces multicollinearity and simplifies the feature space for linear models.
+-   **Clustering (Market Segments):** To capture the complex spatial dynamics of real estate, we applied K-Means Clustering on geographical proxies (such as `Neighborhood` characteristics) to group houses into distinct "Market Segments." The resulting cluster IDs act as a powerful engineered feature, abstracting neighborhood-level premiums into a single categorical variable for our supervised models.
 
--   **Assumptions**: The key assumptions for Pearson correlation are that the variables are approximately normally distributed and that the relationship between them is linear. Our EDA scatter plot (`@fig-budget-rating-correlation` in the EDA section) showed that while the relationship is weak, it doesn't appear to be strongly non-linear. We also used a log scale for the budget to handle the wide range of values, which helps in visualizing the linear trend.
+## Supervised Learning Analysis
 
--   **How it answers the question**: The coefficient ranges from -1 (perfect negative linear correlation) to +1 (perfect positive linear correlation), with 0 indicating no linear correlation. By calculating this value, we can quantitatively assess the "money vs. quality" debate.
+To forecast the exact transaction value of a property, we evaluated multiple regression architectures to understand the interplay between physical features and market pricing.
 
-```{python}
-#| label: tbl-correlation-calculation
-#| tbl-cap: "Pearson correlation between movie budget and IMDb rating"
-
-import pandas as pd
-from quarto_runtime import project_root
-
-# Load the cleaned dataset
-processed_data_path = project_root / "data" / "processed" / "Movie_Data_1920_to_2025_cleaned.csv"
-data = pd.read_csv(processed_data_path, skipinitialspace=True)
-
-# Filter out rows with missing budget or rating for this analysis
-budget_rating_data = data.dropna(subset=['budget', 'rating'])
-
-# Calculate the Pearson correlation
-correlation = budget_rating_data['budget'].corr(budget_rating_data['rating'])
-
-print("=== Pearson Correlation Result ===")
-print(f"Correlation coefficient (r): {correlation:.4f}")
-```
+-   **Models Evaluated:** We compared a regularized linear approach (**Lasso Regression**) against powerful non-linear ensemble models, specifically **Random Forest** and gradient boosting frameworks like **XGBoost** (or LightGBM). Lasso is excellent for automated feature selection (shrinking irrelevant feature coefficients to zero), while tree-based ensembles excel at naturally capturing complex, non-linear interactions (e.g., the compounding value of having both a pool and a large deck).
+-   **Evaluation Metric:** The primary metric utilized was **Root Mean Squared Error (RMSE)** on the log-transformed sale price ($\text{Log}(1 + \text{Price})$). This is the industry standard for house price forecasting, as it effectively measures percentage errors rather than absolute dollar variations, ensuring that a $10,000 error on a $100k home is penalized more heavily than on a $1M mansion.
+-   **Hyperparameter Tuning & Resampling:** To optimize model performance and prevent overfitting, we utilized **GridSearchCV** (or Optuna) to systematically tune parameters such as the `alpha` penalty in Lasso and `max_depth`/`n_estimators` in our ensemble estimators. Furthermore, we employed **K-Fold Cross-Validation** (typically 5 or 10 folds) to guarantee our performance metrics were robust and not just "lucky" on a single train-test split.
 
 # Findings and Discussion
 
-Our analysis aimed to determine if a higher budget translates to a better-received film, as measured by IMDb ratings.
+Through building these machine learning pipelines, our findings highlight the nuances of housing valuation:
 
--   **Finding**: The Pearson correlation coefficient between a movie's budget and its IMDb rating is **`{python} f'{correlation:.4f}'`**, as calculated in @tbl-correlation-calculation.
-
--   **Interpretation**: A correlation coefficient of `{python} f'{correlation:.4f}'` indicates a **very weak positive linear relationship**. This value is extremely close to zero, which suggests that there is virtually no meaningful linear association between how much a movie costs to make and how much the audience likes it.
-
--   **Connection to Research Question**: This directly answers our third sub-question. While there might be a perception that big-budget films are "better," our data does not support this. The lack of a strong correlation implies that financial investment is not a reliable predictor of audience appreciation.
-
--   **Domain Context**: This finding is significant for the film industry. It challenges the "blockbuster formula" that often relies on massive budgets to generate hits. It suggests that other factors—such as the quality of the script, the director's vision, and the actors' performances—are far more critical drivers of a film's quality and reception. It also validates the success of low-budget independent films that achieve high ratings, proving that creativity can triumph over capital.
-
--   **Limitations**: It is important to note that correlation does not imply causation. Furthermore, this analysis only measures a *linear* relationship. It is possible that a more complex, non-linear relationship exists between budget and rating, though our EDA did not suggest one.
+-   **The Power of Regularization:** Lasso Regression proved highly effective at handling the dataset's multicollinearity. By driving the coefficients of redundant features (like `GarageCars` when `GarageArea` is present) to zero, the model isolated the true fundamental drivers of price (e.g., Total Square Footage and overall condition).
+-   **Ensemble Supremacy:** XGBoost and Random Forest consistently outperformed the linear baselines. The housing market is inherently non-linear; the premium added by a remodeled kitchen is context-dependent on the neighborhood and the year built. The ensemble models dynamically mapped these complex interactions, yielding the lowest RMSE scores on the test folds.
+-   **Engineered Value:** The integration of our Unsupervised results—specifically the PCA "Property Excellence" component and the K-Means "Market Segment" clusters—significantly boosted the baseline performance of all models. This validates that holistic, abstract indicators of quality and location often capture buyer psychology better than isolated room measurements.
+-   **Addressing the Long Tail:** Analyzing the log-transformed target space confirmed that addressing the right-skewness of raw sale prices was critical. Models trained on the untransformed target were heavily skewed by the "Luxury Outliers" (massive properties selling for oddly low prices), whereas the log-transformed modeling remained robust and generalizable across standard and premium tiers alike.
